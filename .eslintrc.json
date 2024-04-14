@@ -1,11 +1,12 @@
 {
   "root": true,
   "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint", "react-native", "prettier"],
+  "plugins": ["@typescript-eslint", "react-native", "prettier", "mobx"],
   "extends": [
     "universe",
     "universe/native",
     "universe/shared/typescript-analysis",
+    "plugin:mobx/recommended",
     "plugin:prettier/recommended"
   ],
   "overrides": [
@@ -26,6 +27,10 @@
     "react-native/no-inline-styles": 2,
     "react-native/no-raw-text": 2,
     "react-native/no-single-element-style-arrays": 2,
-    "no-console": "error"
+    "no-console": "error",
+    "mobx/exhaustive-make-observable": "warn",
+    "mobx/unconditional-make-observable": "error",
+    "mobx/missing-make-observable": "error",
+    "mobx/missing-observer": "warn"
   }
 }
