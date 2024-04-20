@@ -1,9 +1,11 @@
-import { SQLiteDatabase, SQLError, SQLResultSet } from 'expo-sqlite';
+import { SQLError, SQLiteDatabase, SQLResultSet } from 'expo-sqlite';
 import { injectable } from 'inversify';
 import { makeAutoObservable, runInAction } from 'mobx';
 
 import { toDoDb } from './database';
+import { convertToToDoItem, ToDoTaskDto } from './dtoModels';
 import { getRandomId } from './randomId';
+import { ToDoItem } from '../stores/todoModel';
 
 @injectable()
 export class ToDoGateway {
@@ -16,7 +18,7 @@ export class ToDoGateway {
     makeAutoObservable(this);
   }
 
-  async getAll() {
+  async getAll(): Promise<ToDoItem[]> {
     const result = await new Promise<SQLResultSet>((resolve, reject) => {
       this.db.transaction((tx) => {
         tx.executeSql(
@@ -33,8 +35,8 @@ export class ToDoGateway {
       });
     });
 
-    console.log(result.rows);
-    return result.rows;
+    const rows: ToDoTaskDto[] = result.rows._array;
+    return rows.map(convertToToDoItem);
   }
 
   private initializeDb() {

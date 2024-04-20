@@ -4,7 +4,9 @@ import '../mobx';
 import { observer } from 'mobx-react-lite';
 import { View, Text } from 'react-native';
 
-import { useInitStore } from '../stores/appInitStore';
+import { ToDoGateway } from '../gateways/ToDoGateway';
+import { getContainer } from '../ioc/container';
+import { useInitStore } from '../stores/AppInitStore';
 
 const HomeLayout = observer(function HomeLayout() {
   const initStore = useInitStore();
@@ -20,3 +22,7 @@ const HomeLayout = observer(function HomeLayout() {
 });
 
 export default HomeLayout;
+
+setTimeout(() => {
+  getContainer().get<ToDoGateway>(ToDoGateway).getAll();
+}, 1000);
