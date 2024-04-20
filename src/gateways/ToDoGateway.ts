@@ -3,7 +3,11 @@ import { injectable } from 'inversify';
 import { makeAutoObservable, runInAction } from 'mobx';
 
 import { toDoDb } from './database';
-import { convertToToDoItem, ToDoTaskDto } from './dtoModels';
+import {
+  convertToToDoItem,
+  convertToToDoTaskDto,
+  ToDoTaskDto,
+} from './dtoModels';
 import { getRandomId } from './randomId';
 import { ToDoItem } from '../stores/todoModel';
 
@@ -37,6 +41,26 @@ export class ToDoGateway {
 
     const rows: ToDoTaskDto[] = result.rows._array;
     return rows.map(convertToToDoItem);
+  }
+
+  async update(todo: ToDoItem): Promise<void> {
+    const dto = convertToToDoTaskDto(todo);
+
+    return new Promise((resolve, reject) => {
+      this.db.transaction((tx) => {
+        tx.executeSql(
+          'UPDATE Todo SET title = ?, description = ?, isDone = ? WHERE id = ?',
+          [dto.title, dto.description, dto.isDone ? 1 : 0, dto.id],
+          (_, resultSet) => {
+            resolve();
+          },
+          (_, error) => {
+            reject(error);
+            return true;
+          },
+        );
+      });
+    });
   }
 
   private initializeDb() {

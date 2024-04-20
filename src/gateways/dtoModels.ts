@@ -15,3 +15,12 @@ export function convertToToDoItem(dto: ToDoTaskDto): ToDoItem {
     isDone: dto.isDone === 1,
   };
 }
+
+export function convertToToDoTaskDto(item: ToDoItem): ToDoTaskDto {
+  return {
+    id: item.id,
+    title: item.title,
+    description: item.description,
+    isDone: item.isDone ? 1 : 0,
+  };
+}

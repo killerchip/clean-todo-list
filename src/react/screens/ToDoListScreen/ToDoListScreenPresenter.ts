@@ -1,14 +1,17 @@
 import { inject, injectable } from 'inversify';
 import { makeAutoObservable } from 'mobx';
-import { createContext, useContext } from 'react';
 
-import { useInject } from '../../../ioc/useDependency.react';
+import {
+  createDependencyContext,
+  useNewDependency,
+} from '../../../ioc/useDependency.react';
 import { ToDoStore } from '../../../stores/ToDoStore';
 import { ToDoItem } from '../../../stores/todoModel';
 import { ToDoItemViewModel } from '../todoViewModel';
 
 interface IToDoStore {
   todos: ToDoItem[];
+  updateTodo: (newTodo: ToDoItem) => void;
 }
 
 @injectable()
@@ -23,28 +26,16 @@ export class ToDoListScreenPresenter {
 
   onDoneChange = (id: string, newState: boolean) => {
     const item = this._todoStore.todos.find((item) => item.id === id);
-    if (item) {
-      item.isDone = newState;
-    }
+    this._todoStore.updateTodo({
+      ...item,
+      isDone: newState,
+    } as ToDoItem);
   };
 }
 
-export function useToDoListScreenPresenter() {
-  return useInject(ToDoListScreenPresenter);
-}
-
 export const ToDoListScreenPresenterContext =
-  createContext<ToDoListScreenPresenter | null>(null);
+  createDependencyContext<ToDoListScreenPresenter>();
 
-export function useToDoListScreenPresenterContext() {
-  const presenter = useContext(ToDoListScreenPresenterContext);
-  if (!presenter) {
-    throw new Error(
-      ['Context Value was not found', 'ToDoListScreenPresenterContext'].join(
-        ' : ',
-      ),
-    );
-  }
-
-  return presenter;
+export function useToDoListScreenPresenter() {
+  return useNewDependency(ToDoListScreenPresenter);
 }

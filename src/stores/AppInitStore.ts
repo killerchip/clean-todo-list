@@ -2,7 +2,7 @@ import { inject, injectable } from 'inversify';
 import { makeAutoObservable } from 'mobx';
 
 import { ToDoGateway } from '../gateways/ToDoGateway';
-import { useInject } from '../ioc/useDependency.react';
+import { useNewDependency } from '../ioc/useDependency.react';
 
 interface ITodoGateway {
   isReady: boolean;
@@ -20,5 +20,5 @@ export class AppInitStore {
 }
 
 export function useInitStore() {
-  return useInject<AppInitStore>(AppInitStore);
+  return useNewDependency<AppInitStore>(AppInitStore);
 }

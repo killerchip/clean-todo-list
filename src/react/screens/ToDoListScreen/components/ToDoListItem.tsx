@@ -4,14 +4,14 @@ import { observer } from 'mobx-react-lite';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { ToDoItemViewModel } from '../../todoViewModel';
-import { useToDoListScreenPresenterContext } from '../ToDoListScreenPresenter';
+import { ToDoListScreenPresenterContext as ToDoContext } from '../ToDoListScreenPresenter';
 
 type Props = {
   item: ToDoItemViewModel;
 };
 
 export const ToDoListItem = observer(function ToDoListItem({ item }: Props) {
-  const presenter = useToDoListScreenPresenterContext();
+  const presenter = ToDoContext.useContext();
   const onChange = action((value: boolean) =>
     presenter.onDoneChange(item.id, value),
   );

@@ -1,11 +1,29 @@
 import { interfaces } from 'inversify';
-import { useState } from 'react';
+import { createContext, useContext as useContextReact, useState } from 'react';
 
 import { getContainer } from './container';
 
-export function useInject<T>(identifier: interfaces.ServiceIdentifier<T>): T {
+export function useNewDependency<T>(
+  identifier: interfaces.ServiceIdentifier<T>,
+): T {
   const container = getContainer();
   const [dependency] = useState(() => container.get<T>(identifier));
 
   return dependency;
+}
+
+export function createDependencyContext<T>() {
+  const Context = createContext<T | null>(null);
+  const useContext = () => {
+    const presenter = useContextReact(Context);
+    if (!presenter) {
+      throw new Error(
+        ['Context Value was not found', Context.displayName].join(' : '),
+      );
+    }
+
+    return presenter;
+  };
+
+  return { Context, useContext };
 }

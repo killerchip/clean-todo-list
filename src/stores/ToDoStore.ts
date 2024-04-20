@@ -6,6 +6,7 @@ import { ToDoGateway } from '../gateways/ToDoGateway';
 
 interface ITodoGateway {
   getAll(): Promise<ToDoItem[]>;
+  update(todo: ToDoItem): Promise<void>;
 }
 
 @injectable()
@@ -23,4 +24,13 @@ export class ToDoStore {
       this.todos = all;
     });
   }
+
+  updateTodo = async (newTodo: ToDoItem) => {
+    const index = this.todos.findIndex((todo) => todo.id === newTodo.id);
+    if (index === -1) {
+      return;
+    }
+    this.todos[index] = newTodo;
+    await this._todoGateway.update(newTodo);
+  };
 }
