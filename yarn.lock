@@ -4457,6 +4457,7 @@ __metadata:
     eslint-plugin-prettier: "npm:^5.1.3"
     eslint-plugin-react-native: "npm:^4.1.0"
     expo: "npm:~50.0.14"
+    expo-checkbox: "npm:~2.7.0"
     expo-constants: "npm:~15.4.5"
     expo-file-system: "npm:~16.0.8"
     expo-linking: "npm:~6.2.2"
@@ -5790,6 +5791,13 @@ __metadata:
     invariant: "npm:^2.2.4"
     md5-file: "npm:^3.2.3"
   checksum: 10c0/45fd52075e98a8813184727890ef9e992bd727684ca896ab097e4e380503fad62e8bb5a7f98b7fc78665764f54c84f6d889d2d1d913f769f1df7adf34f8965b2
+  languageName: node
+  linkType: hard
+
+"expo-checkbox@npm:~2.7.0":
+  version: 2.7.0
+  resolution: "expo-checkbox@npm:2.7.0"
+  checksum: 10c0/163fe6fa5cd8cf2905999da71c005855bb684f695abdd5e05f42865c269aa573223b526fc7df3781509c71ae9df12f014208b2286d892e39ba8f5abf01b8e1ba
   languageName: node
   linkType: hard
 

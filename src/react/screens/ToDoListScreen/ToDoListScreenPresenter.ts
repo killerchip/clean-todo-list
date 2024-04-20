@@ -13,7 +13,6 @@ interface IToDoStore {
 @injectable()
 export class ToDoListScreenPresenter {
   constructor(@inject(ToDoStore) private _todoStore: IToDoStore) {
-    console.log('making New ToDoListScreenPresenter');
     makeAutoObservable(this);
   }
 
