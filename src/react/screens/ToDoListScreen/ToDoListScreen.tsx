@@ -3,7 +3,10 @@ import { action } from 'mobx';
 import { observer } from 'mobx-react-lite';
 import { FlatList, ListRenderItem, StyleSheet, View } from 'react-native';
 
-import { useToDoListScreenPresenter } from './ToDoListScreenPresenter';
+import {
+  ToDoListScreenPresenterContext,
+  useToDoListScreenPresenter,
+} from './ToDoListScreenPresenter';
 import { ToDoListItem } from './components/ToDoListItem';
 import { ToDoItemViewModel } from '../todoViewModel';
 
@@ -15,14 +18,16 @@ export const ToDoListScreen = observer(function ToDoListScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <Stack.Screen options={{ title: 'To Do List' }} />
-      <FlatList<ToDoItemViewModel>
-        data={presenter.toDoList.slice()}
-        renderItem={renderItem}
-        keyExtractor={action((item) => item.id)}
-      />
-    </View>
+    <ToDoListScreenPresenterContext.Provider value={presenter}>
+      <View style={styles.container}>
+        <Stack.Screen options={{ title: 'To Do List' }} />
+        <FlatList<ToDoItemViewModel>
+          data={presenter.toDoList.slice()}
+          renderItem={renderItem}
+          keyExtractor={action((item) => item.id)}
+        />
+      </View>
+    </ToDoListScreenPresenterContext.Provider>
   );
 });
 

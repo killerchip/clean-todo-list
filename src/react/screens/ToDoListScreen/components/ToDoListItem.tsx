@@ -1,17 +1,28 @@
 import { Checkbox } from 'expo-checkbox';
+import { action } from 'mobx';
 import { observer } from 'mobx-react-lite';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { ToDoItemViewModel } from '../../todoViewModel';
+import { useToDoListScreenPresenterContext } from '../ToDoListScreenPresenter';
 
 type Props = {
   item: ToDoItemViewModel;
 };
 
 export const ToDoListItem = observer(function ToDoListItem({ item }: Props) {
+  const presenter = useToDoListScreenPresenterContext();
+  const onChange = action((value: boolean) =>
+    presenter.onDoneChange(item.id, value),
+  );
+
   return (
     <View style={styles.item}>
-      <Checkbox style={styles.checkbox} value={item.isDone} />
+      <Checkbox
+        style={styles.checkbox}
+        value={item.isDone}
+        onValueChange={onChange}
+      />
       <Text>{item.title}</Text>
     </View>
   );
