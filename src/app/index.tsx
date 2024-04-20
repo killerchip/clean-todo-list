@@ -1,10 +1,3 @@
-import { View, Text } from 'react-native';
+import { ToDoListScreen } from '../react/screens/ToDoListScreen/ToDoListScreen';
 
-// eslint-disable-next-line mobx/missing-observer
-export default function HomePage() {
-  return (
-    <View>
-      <Text>Hello World</Text>
-    </View>
-  );
-}
+export default ToDoListScreen;
