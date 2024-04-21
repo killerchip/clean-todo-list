@@ -1,6 +1,7 @@
 import { inject, injectable } from 'inversify';
 import { action, makeAutoObservable } from 'mobx';
 
+import { AlertUIGateway } from '../../../gateways/AlertUIGateway';
 import {
   createDependencyContext,
   useNewDependency,
@@ -38,7 +39,11 @@ export class ToDoFormScreenPresenter {
   private _id?: string = undefined;
 
   // TODO: declare the store dependency as interface
-  constructor(@inject(ToDoStore) private _toDoStore: ToDoStore) {
+  constructor(
+    @inject(ToDoStore) private _toDoStore: ToDoStore,
+    @inject(AlertUIGateway)
+    private _alertGateway: Pick<AlertUIGateway, 'alert'>,
+  ) {
     makeAutoObservable(this);
   }
 
@@ -72,19 +77,24 @@ export class ToDoFormScreenPresenter {
       return false;
     }
 
-    if (this.isNewTodo) {
-      await this._toDoStore.createTodo({
-        title: this.formData.title,
-        description: this.formData.description ?? '',
-        isDone: this.formData.isDone,
-      });
-    } else {
-      await this._toDoStore.updateTodo({
-        id: this._id!,
-        title: this.formData.title,
-        description: this.formData.description ?? '',
-        isDone: this.formData.isDone,
-      });
+    try {
+      if (this.isNewTodo) {
+        await this._toDoStore.createTodo({
+          title: this.formData.title,
+          description: this.formData.description ?? '',
+          isDone: this.formData.isDone,
+        });
+      } else {
+        await this._toDoStore.updateTodo({
+          id: this._id!,
+          title: this.formData.title,
+          description: this.formData.description ?? '',
+          isDone: this.formData.isDone,
+        });
+      }
+    } catch {
+      this._alertGateway.alert('Error', 'Failed to save task');
+      return false;
     }
 
     return true;

@@ -1,6 +1,7 @@
 import { inject, injectable } from 'inversify';
 import { makeAutoObservable } from 'mobx';
 
+import { AlertUIGateway } from '../../../gateways/AlertUIGateway';
 import {
   createDependencyContext,
   useNewDependency,
@@ -9,14 +10,15 @@ import { ToDoStore } from '../../../stores/ToDoStore';
 import { ToDoItem } from '../../../stores/todoModel';
 import { ToDoItemViewModel } from '../todoViewModel';
 
-interface IToDoStore {
-  todos: ToDoItem[];
-  updateTodo: (newTodo: ToDoItem) => void;
-}
+type IToDoStore = Pick<ToDoStore, 'todos' | 'updateTodo'>;
+type IAlertUIGateway = Pick<AlertUIGateway, 'alert'>;
 
 @injectable()
 export class ToDoListScreenPresenter {
-  constructor(@inject(ToDoStore) private _todoStore: IToDoStore) {
+  constructor(
+    @inject(ToDoStore) private _todoStore: IToDoStore,
+    @inject(AlertUIGateway) private _alertGateway: IAlertUIGateway,
+  ) {
     makeAutoObservable(this);
   }
 
@@ -24,12 +26,16 @@ export class ToDoListScreenPresenter {
     return this._todoStore.todos;
   }
 
-  onDoneChange = (id: string, newState: boolean) => {
+  onDoneChange = async (id: string, newState: boolean) => {
     const item = this._todoStore.todos.find((item) => item.id === id);
-    this._todoStore.updateTodo({
-      ...item,
-      isDone: newState,
-    } as ToDoItem);
+    try {
+      await this._todoStore.updateTodo({
+        ...item,
+        isDone: newState,
+      } as ToDoItem);
+    } catch {
+      this._alertGateway.alert('Error', 'Failed to update task');
+    }
   };
 }
 

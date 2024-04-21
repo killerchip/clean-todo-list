@@ -27,8 +27,16 @@ export class ToDoStore {
     if (index === -1) {
       return;
     }
+
+    const oldTodo = this.todos[index];
     this.todos[index] = newTodo;
-    await this._todoGateway.update(newTodo);
+
+    try {
+      await this._todoGateway.update(newTodo);
+    } catch (error) {
+      this.todos[index] = oldTodo; // rollback
+      throw error;
+    }
   };
 
   createTodo = async (newTodo: Omit<ToDoItem, 'id'>) => {
