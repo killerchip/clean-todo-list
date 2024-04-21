@@ -43,6 +43,27 @@ export class ToDoGateway {
     return rows.map(convertToToDoItem);
   }
 
+  async create(todo: Omit<ToDoItem, 'id'>) {
+    const newId = getRandomId();
+    const dto = convertToToDoTaskDto({ ...todo, id: newId });
+
+    return new Promise<string>((resolve, reject) => {
+      this.db.transaction((tx) => {
+        tx.executeSql(
+          'INSERT INTO Todo (id, title, description, isDone) VALUES (?, ?, ?, ?)',
+          [dto.id, dto.title, dto.description, dto.isDone ? 1 : 0],
+          (_) => {
+            resolve(newId);
+          },
+          (_, error) => {
+            reject(error);
+            return true;
+          },
+        );
+      });
+    });
+  }
+
   async update(todo: ToDoItem): Promise<void> {
     const dto = convertToToDoTaskDto(todo);
 
@@ -118,3 +139,6 @@ export class ToDoGateway {
     });
   }
 }
+
+// TODO clean up code here
+// - lint

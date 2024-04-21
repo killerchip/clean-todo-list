@@ -4,10 +4,7 @@ import { makeAutoObservable, runInAction } from 'mobx';
 import { ToDoItem } from './todoModel';
 import { ToDoGateway } from '../gateways/ToDoGateway';
 
-interface ITodoGateway {
-  getAll(): Promise<ToDoItem[]>;
-  update(todo: ToDoItem): Promise<void>;
-}
+type ITodoGateway = Pick<ToDoGateway, 'getAll' | 'create' | 'update'>;
 
 @injectable()
 export class ToDoStore {
@@ -32,5 +29,13 @@ export class ToDoStore {
     }
     this.todos[index] = newTodo;
     await this._todoGateway.update(newTodo);
+  };
+
+  createTodo = async (newTodo: Omit<ToDoItem, 'id'>) => {
+    const newId = await this._todoGateway.create(newTodo);
+    const todo = { ...newTodo, id: newId };
+    runInAction(() => {
+      this.todos.push(todo);
+    });
   };
 }

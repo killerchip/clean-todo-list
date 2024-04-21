@@ -8,10 +8,13 @@ export function useNewDependency<T>(
   init?: (dependency: T) => void,
 ): T {
   const container = getContainer();
-  const [dependency] = useState(() => container.get<T>(identifier));
-  if (init) {
-    init(dependency);
-  }
+  const [dependency] = useState(() => {
+    const obtained = container.get<T>(identifier);
+    if (init) {
+      init(obtained);
+    }
+    return obtained;
+  });
 
   return dependency;
 }
