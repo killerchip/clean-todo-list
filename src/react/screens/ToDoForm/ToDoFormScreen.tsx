@@ -58,6 +58,11 @@ export const ToDoFormScreen = observer(function ToDoFormScreen() {
             value={presenter.formData.title}
             onChangeText={onChangeTitle}
           />
+          {presenter.formHasErrors && (
+            <Text style={styles.errorIndicator}>
+              {presenter.formErrors.title[0]}
+            </Text>
+          )}
           <Text style={styles.label}>Task Description</Text>
           <TextInput
             style={[styles.textInput, styles.textArea]}
@@ -112,6 +117,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     paddingVertical: 16,
+  },
+  errorIndicator: {
+    paddingTop: 4,
+    color: 'red',
+    fontSize: 12,
   },
 });
 

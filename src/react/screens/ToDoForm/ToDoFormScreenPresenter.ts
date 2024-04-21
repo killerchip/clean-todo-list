@@ -6,7 +6,23 @@ import {
   useNewDependency,
 } from '../../../ioc/useDependency.react';
 import { ToDoStore } from '../../../stores/ToDoStore';
-import { ToDoFormData, ToDoItemViewModel } from '../todoViewModel';
+import { ToDoItemViewModel } from '../todoViewModel';
+
+export type ToDoFormData = {
+  id?: string;
+  title: string;
+  description?: string;
+  isDone: boolean;
+};
+
+export type ToDoFormErrors = {
+  title: string[];
+  hasErrors?: boolean;
+};
+
+const getDefaultFormErrorsValue = (): ToDoFormErrors => ({
+  title: [],
+});
 
 @injectable()
 export class ToDoFormScreenPresenter {
@@ -16,6 +32,8 @@ export class ToDoFormScreenPresenter {
     description: '',
     isDone: false,
   };
+
+  formErrors: ToDoFormErrors = getDefaultFormErrorsValue();
 
   private _id?: string = undefined;
 
@@ -36,8 +54,24 @@ export class ToDoFormScreenPresenter {
     return this.isNewTodo ? 'New Task' : this.todo?.title;
   }
 
+  get formHasErrors() {
+    return this.formErrors.title.length > 0;
+  }
+
+  validate() {
+    this.formErrors = getDefaultFormErrorsValue();
+    if (!this.formData.title) {
+      this.formErrors.title.push('Title is required');
+    }
+  }
+
   // TODO this conversion here should be done in ViewModel?
   async onSubmit() {
+    this.validate();
+    if (this.formHasErrors) {
+      return false;
+    }
+
     if (this.isNewTodo) {
       await this._toDoStore.createTodo({
         title: this.formData.title,
