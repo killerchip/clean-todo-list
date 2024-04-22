@@ -124,10 +124,3 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
 });
-
-// ToDo: Properly style the screen
-// - margins
-// - TextInput styles
-
-// TODO: Form Validation
-// - Title is required

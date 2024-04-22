@@ -12,7 +12,6 @@ export class ToDoStore {
 
   constructor(@inject(ToDoGateway) private _todoGateway: ITodoGateway) {
     makeAutoObservable(this);
-    this.load().then();
   }
 
   async load() {

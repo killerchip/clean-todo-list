@@ -2,10 +2,7 @@ import { inject, injectable } from 'inversify';
 import { action, makeAutoObservable } from 'mobx';
 
 import { AlertUIGateway } from '../../../gateways/AlertUIGateway';
-import {
-  createDependencyContext,
-  useNewDependency,
-} from '../../../ioc/useDependency.react';
+import { useNewDependency } from '../../../ioc/useDependency.react';
 import { ToDoStore } from '../../../stores/ToDoStore';
 import { ToDoItemViewModel } from '../todoViewModel';
 
@@ -38,9 +35,9 @@ export class ToDoFormScreenPresenter {
 
   private _id?: string = undefined;
 
-  // TODO: declare the store dependency as interface
   constructor(
-    @inject(ToDoStore) private _toDoStore: ToDoStore,
+    @inject(ToDoStore)
+    private _toDoStore: Pick<ToDoStore, 'todos' | 'createTodo' | 'updateTodo'>,
     @inject(AlertUIGateway)
     private _alertGateway: Pick<AlertUIGateway, 'alert'>,
   ) {
@@ -70,7 +67,6 @@ export class ToDoFormScreenPresenter {
     }
   }
 
-  // TODO this conversion here should be done in ViewModel?
   async onSubmit() {
     this.validate();
     if (this.formHasErrors) {
@@ -123,17 +119,9 @@ export class ToDoFormScreenPresenter {
   }
 }
 
-export const ToDoFormScreenPresenterContext =
-  createDependencyContext<ToDoFormScreenPresenter>();
-
 export function useToDoListScreenPresenter(id?: string) {
   return useNewDependency(
     ToDoFormScreenPresenter,
     action((presenter) => presenter.init(id)),
   );
 }
-
-// TODO wire in item update
-// -make a create todo on the gateway
-// -make sure the store has an new store method
-// -presenter calls the method

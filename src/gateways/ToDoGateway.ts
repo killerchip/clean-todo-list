@@ -95,7 +95,7 @@ export class ToDoGateway {
           tx.executeSql(
             'UPDATE Todo SET title = ?, description = ?, isDone = ? WHERE id = ?',
             [dto.title, dto.description, dto.isDone ? 1 : 0, dto.id],
-            (_, resultSet) => {
+            () => {
               resolve();
             },
             (_, error) => {
@@ -135,13 +135,13 @@ export class ToDoGateway {
             isDone INTEGER NOT NULL
           );`,
                 [],
-                (_, resultSet: SQLResultSet) => {
+                () => {
                   tx.executeSql(
                     `INSERT INTO Todo (id, title, description, isDone)
                SELECT '${randomId}', 'Sample Task', 'This is a sample task.', 0
                WHERE NOT EXISTS (SELECT 1 FROM Todo WHERE id = '${randomId}');`,
                     [],
-                    (_, resultSet: SQLResultSet) => {
+                    () => {
                       console.log('Sample record inserted successfully');
                     },
                     (_, error: SQLError) => {
@@ -182,6 +182,3 @@ export class ToDoGateway {
     );
   }
 }
-
-// TODO clean up code here
-// - lint
